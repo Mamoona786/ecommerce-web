@@ -575,3 +575,322 @@ Use custom hooks
 
 
 I want you to update my Home.jsx file and add dropdowns wherever necessary, hover effects wherever necessary, and page navigation wherever necessary, and also new components or items wherever necessary. But make sure that the overall design of the Home page should not be changed. The theme and design of my home page should remain 100% pixel perfect same as shown in the picture attached. You can also make new components or js files wherever needed in order to make my home page fully functional
+/* ===== FORCE bigger font sizes on Home page ===== */
+
+.home-page {
+  font-size: 16px;
+}
+
+/* Header */
+.home-page .logo-text {
+  font-size: 20px !important;
+}
+
+.home-page .search-input,
+.home-page .search-select,
+.home-page .search-button {
+  font-size: 15px !important;
+}
+
+.home-page .icon-label {
+  font-size: 13px !important;
+}
+
+.home-page .icon {
+  font-size: 20px !important;
+}
+
+/* Navbar */
+.home-page .nav-link,
+.home-page .nav-link-active {
+  font-size: 16px !important;
+}
+
+/* Hero left categories */
+.home-page .category-item {
+  font-size: 16px !important;
+}
+
+/* Hero content */
+.home-page .banner-small-text {
+  font-size: 31px !important;
+}
+
+.home-page .banner-title {
+  font-size: 48px !important;
+}
+
+.home-page .learn-more-btn {
+  font-size: 16px !important;
+}
+
+/* Hero side cards */
+.home-page .user-text {
+  font-size: 16px !important;
+}
+
+.home-page .join-btn,
+.home-page .login-btn {
+  font-size: 14px !important;
+}
+
+.home-page .orange-card,
+.home-page .teal-card {
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+}
+
+/* Deals */
+.home-page .deals-title {
+  font-size: 30px !important;
+}
+
+.home-page .deals-subtitle {
+  font-size: 17px !important;
+}
+
+.home-page .product-name {
+  font-size: 16px !important;
+}
+
+.home-page .discount-badge {
+  font-size: 13px !important;
+}
+
+/* Category showcase */
+.home-page .category-showcase-title {
+  font-size: 29px !important;
+}
+
+.home-page .category-showcase-button {
+  font-size: 15px !important;
+}
+
+.home-page .showcase-card-title {
+  font-size: 16px !important;
+}
+
+.home-page .showcase-card-price {
+  font-size: 13px !important;
+}
+
+/* Quote section */
+.home-page .quote-heading {
+  font-size: 40px !important;
+}
+
+.home-page .quote-description {
+  font-size: 16px !important;
+}
+
+.home-page .quote-form-title {
+  font-size: 20px !important;
+}
+
+.home-page .quote-input,
+.home-page .quote-textarea,
+.home-page .quote-select,
+.home-page .quote-submit-btn {
+  font-size: 15px !important;
+}
+
+/* Recommended */
+.home-page .recommended-heading {
+  font-size: 32px !important;
+}
+
+.home-page .recommended-price {
+  font-size: 16px !important;
+}
+
+.home-page .recommended-title,
+.home-page .recommended-subtitle {
+  font-size: 15px !important;
+}
+
+/* Extra services */
+.home-page .extra-services-heading {
+  font-size: 24px !important;
+}
+
+.home-page .extra-service-title {
+  font-size: 16px !important;
+}
+
+/* Suppliers */
+.home-page .suppliers-heading {
+  font-size: 25px !important;
+}
+
+.home-page .supplier-country {
+  font-size: 16px !important;
+}
+
+.home-page .supplier-site {
+  font-size: 13px !important;
+}
+
+/* Newsletter */
+.home-page .newsletter-title {
+  font-size: 22px !important;
+}
+
+.home-page .newsletter-text {
+  font-size: 16px !important;
+}
+
+.home-page .newsletter-input,
+.home-page .newsletter-btn {
+  font-size: 15px !important;
+}
+
+/* Footer */
+.home-page .footer-brand-text {
+  font-size: 24px !important;
+}
+
+.home-page .footer-brand-description {
+  font-size: 16px !important;
+}
+
+.home-page .footer-links-title {
+  font-size: 18px !important;
+}
+
+.home-page .footer-link {
+  font-size: 16px !important;
+}
+
+.home-page .footer-copy,
+.home-page .footer-language {
+  font-size: 16px !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+main, staging, dev branches on repo
+main => main code is pushed here
+staging => tag is pushed here when it is about to be deploy, another tag is made when it is to be merged with main
+dev => side developments are pushed here and tag stored in staging
+
+if want redux:
+use slice/toolkit light version of redux
+
+If products are to be rendered:
+if we have 1000 - 2000 products, we don't need to render all of the products and using context we only have to render 40 - 100 products so that browser cannot get heavy during scrolling, when moves to next scroll, it removes the previous 50 and generate new 50 renders. 
+we can use temporary apis using temporary emails using nodemailer for sending signup emails, reset passwords, order confirmation, 
+
+do not push .env in backend
+
+
+
+deployment on vercel
+react application on client folder
+write api/
+database = mongoDB => take atlas connection
+context manage
+
+db tables => B2C => 5 tables having CRUD operations => make ERD
+categories => products => inventories => cart management => 
+use cookies and session handling
+JWT auth for login/signup functionality
+use debounce effect in search and in clicks
+role based security on end points
+
+
+
+
+
+
+So from here onward, your workflow should be:
+do all new work in dev
+when ready for testing, merge dev into staging
+when fully approved, merge staging into main
+
+git add .
+git commit -m "Create backend server structure"
+git push origin dev
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Then move dev to staging
+
+When you want those backend changes to go to testing/release branch:
+
+Step 5: switch to staging
+git checkout staging
+Step 6: pull latest staging
+git pull origin staging
+Step 7: merge dev into staging
+git merge dev
+
+If there is no conflict, then push:
+
+git push origin staging
+
+Now:
+
+staging also has the backend folder
+main still remains stable
+Then move staging to main
+
+When you are fully satisfied and want production/stable branch updated:
+
+Step 8: switch to main
+git checkout main
+Step 9: pull latest main
+git pull origin main
+Step 10: merge staging into main
+git merge staging
+
+Then push:
+
+git push origin main
+
+Now all 3 branches will contain that backend folder.
