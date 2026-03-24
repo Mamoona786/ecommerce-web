@@ -1,9 +1,15 @@
 import React from "react";
-import americanExpress from "../../assets/american-express.png";
-import masterCard from "../../assets/master-card.png";
-import paypal from "../../assets/paypal.png";
-import visa from "../../assets/visa.png";
-import applePay from "../../assets/apple-pay.png";
+// import americanExpress from "../../assets/american-express.png";
+// import masterCard from "../../assets/master-card.png";
+// import paypal from "../../assets/paypal.png";
+// import visa from "../../assets/visa.png";
+// import applePay from "../../assets/apple-pay.png";
+
+const americanExpress = "/american-express.png";
+const masterCard = "/master-card.png";
+const paypal = "/paypal.png";
+const visa = "/visa.png";
+const applePay = "/apple-pay.png";
 
 function CartSummaryCard({ pricing }) {
   return (

@@ -71,14 +71,11 @@ const Header = () => {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option>All category</option>
-              <option>Automobiles</option>
-              <option>Clothes and wear</option>
-              <option>Home interiors</option>
-              <option>Computer and tech</option>
-              <option>Tools, equipments</option>
-              <option>Sports and outdoor</option>
-              <option>Animal and pets</option>
-              <option>Machinery tools</option>
+              <option>Electronics</option>
+              <option>Home</option>
+              <option>Fashion</option>
+              <option>Computers</option>
+              <option>Wearables</option>
             </select>
             <IoChevronDownOutline className="select-chevron" />
           </div>

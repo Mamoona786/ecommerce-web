@@ -11,9 +11,13 @@ import ProductDiscountBanner from "../components/common/ProductDiscountBanner";
 import FooterSection from "../components/common/FooterSection";
 import "../styles/cart.css";
 
-import tshirtImg from "../assets/recommended-tshirt.png";
-import backpackImg from "../assets/recommended-backpack.png";
-import coffeeMakerImg from "../assets/coffee-maker.png";
+// import tshirtImg from "../assets/recommended-tshirt.png";
+// import backpackImg from "../assets/recommended-backpack.png";
+// import coffeeMakerImg from "../assets/coffee-maker.png";
+
+const tshirtImg = "/recommended-tshirt.png";
+const backpackImg = "/recommended-backpack.png";
+const coffeeMakerImg = "/coffee-maker.png";
 
 const initialCartItems = [
   {
