@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaRegCommentDots,
-  FaRegHeart,
   FaShoppingCart,
   FaSearch,
+  FaBoxOpen,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
@@ -15,11 +16,8 @@ const Header = () => {
 
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState("All category");
-
-  // ✅ user state
   const [user, setUser] = useState(null);
 
-  // ✅ check login on mount
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -37,7 +35,6 @@ const Header = () => {
     navigate(`/products${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
-  // ✅ logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -87,11 +84,10 @@ const Header = () => {
         </form>
 
         <div className="top-icons">
-          {/* ✅ CONDITIONAL AUTH UI */}
           {user ? (
             <>
               <button
-                className="icon-item"
+                className="icon-item icon-item-button"
                 type="button"
                 onClick={() => navigate("/profile")}
               >
@@ -102,10 +98,20 @@ const Header = () => {
               </button>
 
               <button
-                className="icon-item"
+                className="icon-item icon-item-button"
+                type="button"
+                onClick={() => navigate("/orders")}
+              >
+                <FaBoxOpen className="icon" />
+                <span className="icon-label">Orders</span>
+              </button>
+
+              <button
+                className="icon-item icon-item-button"
                 type="button"
                 onClick={handleLogout}
               >
+                <FaSignOutAlt className="icon" />
                 <span className="icon-label">Logout</span>
               </button>
             </>
@@ -116,14 +122,9 @@ const Header = () => {
             </Link>
           )}
 
-          <button className="icon-item" type="button">
+          <button className="icon-item icon-item-button" type="button">
             <FaRegCommentDots className="icon" />
             <span className="icon-label">Message</span>
-          </button>
-
-          <button className="icon-item" type="button">
-            <FaRegHeart className="icon" />
-            <span className="icon-label">Orders</span>
           </button>
 
           <Link to="/cart" className="icon-item">

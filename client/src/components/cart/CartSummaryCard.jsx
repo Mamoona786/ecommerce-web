@@ -1,9 +1,4 @@
 import React from "react";
-// import americanExpress from "../../assets/american-express.png";
-// import masterCard from "../../assets/master-card.png";
-// import paypal from "../../assets/paypal.png";
-// import visa from "../../assets/visa.png";
-// import applePay from "../../assets/apple-pay.png";
 
 const americanExpress = "/american-express.png";
 const masterCard = "/master-card.png";
@@ -11,7 +6,7 @@ const paypal = "/paypal.png";
 const visa = "/visa.png";
 const applePay = "/apple-pay.png";
 
-function CartSummaryCard({ pricing }) {
+function CartSummaryCard({ pricing, onCheckout, checkingOut = false }) {
   return (
     <div className="cart-sidebar-card cart-summary-card">
       <div className="cart-summary-rows">
@@ -40,17 +35,22 @@ function CartSummaryCard({ pricing }) {
         <strong>${pricing.total.toFixed(2)}</strong>
       </div>
 
-      <button type="button" className="cart-checkout-btn">
-        Checkout
+      <button
+        type="button"
+        className="cart-checkout-btn"
+        onClick={onCheckout}
+        disabled={checkingOut}
+      >
+        {checkingOut ? "Processing..." : "Checkout"}
       </button>
 
       <div className="cart-payment-methods">
-            <img src={americanExpress} alt="American Express" />
-            <img src={masterCard} alt="MasterCard" />
-            <img src={paypal} alt="PayPal" />
-            <img src={visa} alt="Visa" />
-            <img src={applePay} alt="Apple Pay" />
-        </div>
+        <img src={americanExpress} alt="American Express" />
+        <img src={masterCard} alt="MasterCard" />
+        <img src={paypal} alt="PayPal" />
+        <img src={visa} alt="Visa" />
+        <img src={applePay} alt="Apple Pay" />
+      </div>
     </div>
   );
 }

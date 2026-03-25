@@ -1,3 +1,5 @@
+import { addToCart as addToCartApi } from "../services/cartService";
+
 export const getUniqueProductImages = (product) => {
   if (!product) return [];
 
@@ -45,30 +47,47 @@ export const toggleSavedProduct = (product) => {
   return !exists;
 };
 
-export const getCartItems = () => {
+const getGuestCartItems = () => {
   try {
     return JSON.parse(localStorage.getItem("cartItems")) || [];
-  } catch (error) {
+  } catch {
     return [];
   }
 };
 
-export const saveCartItems = (items) => {
+const saveGuestCartItems = (items) => {
   localStorage.setItem("cartItems", JSON.stringify(items));
 };
 
-export const addProductToCart = ({
+const parsePrice = (price) => {
+  if (typeof price === "number") return price;
+  return Number(String(price || "").replace(/[^0-9.]/g, "")) || 0;
+};
+
+export const addProductToCart = async ({
   product,
   quantity = 1,
   selectedTierPrice = "",
 }) => {
-  const cartItems = getCartItems();
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    const response = await addToCartApi({
+      productId: product._id,
+      quantity,
+      selectedTierPrice,
+    });
+
+    return response;
+  }
+
+  const cartItems = getGuestCartItems();
 
   const existingItem = cartItems.find(
     (item) => String(item.id) === String(product._id)
   );
 
-  const itemPrice = selectedTierPrice || product.price;
+  const itemPrice = parsePrice(selectedTierPrice || product.price);
 
   if (existingItem) {
     const updatedItems = cartItems.map((item) =>
@@ -81,7 +100,7 @@ export const addProductToCart = ({
         : item
     );
 
-    saveCartItems(updatedItems);
+    saveGuestCartItems(updatedItems);
     return updatedItems;
   }
 
@@ -96,6 +115,6 @@ export const addProductToCart = ({
   };
 
   const updatedItems = [...cartItems, newItem];
-  saveCartItems(updatedItems);
+  saveGuestCartItems(updatedItems);
   return updatedItems;
 };
