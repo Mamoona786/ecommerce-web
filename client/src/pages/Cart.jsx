@@ -38,6 +38,22 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const [checkingOut, setCheckingOut] = useState(false);
 
+  const normalizeCartItems = (items = []) => {
+    return items.map((item) => {
+      const stock = Number(item.stock ?? item.productStock ?? 0);
+      const quantity = Number(item.quantity || 0);
+
+      return {
+        ...item,
+        price: Number(item.price || 0),
+        quantity,
+        stock,
+        isOutOfStock: stock === 0,
+        insufficientStock: quantity > stock && stock > 0,
+      };
+    });
+  };
+
   useEffect(() => {
     const loadCart = async () => {
       try {
@@ -45,10 +61,10 @@ function Cart() {
 
         if (isAuthenticated) {
           const data = await getMyCart();
-          setCartItems(data?.items || []);
+          setCartItems(normalizeCartItems(data?.items || []));
         } else {
           const items = getCartItems();
-          setCartItems(items);
+          setCartItems(normalizeCartItems(items));
         }
       } catch (error) {
         console.error("Failed to load cart:", error);
@@ -65,10 +81,10 @@ function Cart() {
     try {
       if (isAuthenticated) {
         const data = await updateCartItemQty(id, Number(value));
-        setCartItems(data?.cart?.items || []);
+        setCartItems(normalizeCartItems(data?.cart?.items || []));
       } else {
         const updated = updateGuestCartItemQty(id, Number(value));
-        setCartItems(updated);
+        setCartItems(normalizeCartItems(updated));
       }
     } catch (error) {
       console.error("Failed to update quantity:", error);
@@ -79,10 +95,10 @@ function Cart() {
     try {
       if (isAuthenticated) {
         const data = await removeCartItem(id);
-        setCartItems(data?.cart?.items || []);
+        setCartItems(normalizeCartItems(data?.cart?.items || []));
       } else {
         const updated = removeGuestCartItem(id);
-        setCartItems(updated);
+        setCartItems(normalizeCartItems(updated));
       }
     } catch (error) {
       console.error("Failed to remove item:", error);
@@ -93,10 +109,10 @@ function Cart() {
     try {
       if (isAuthenticated) {
         const data = await clearCart();
-        setCartItems(data?.cart?.items || []);
+        setCartItems(normalizeCartItems(data?.cart?.items || []));
       } else {
         const updated = clearGuestCart();
-        setCartItems(updated);
+        setCartItems(normalizeCartItems(updated));
       }
     } catch (error) {
       console.error("Failed to clear cart:", error);
@@ -123,6 +139,19 @@ function Cart() {
 
       if (!cartItems.length) {
         alert("Your cart is empty.");
+        return;
+      }
+
+      const hasOutOfStockItem = cartItems.some((item) => item.isOutOfStock);
+      const hasInsufficientStockItem = cartItems.some((item) => item.insufficientStock);
+
+      if (hasOutOfStockItem) {
+        alert("Some items in your cart are out of stock. Please remove them first.");
+        return;
+      }
+
+      if (hasInsufficientStockItem) {
+        alert("Some items in your cart exceed available stock. Please update quantities.");
         return;
       }
 

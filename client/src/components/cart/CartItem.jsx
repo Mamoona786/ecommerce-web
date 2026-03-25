@@ -1,58 +1,60 @@
 import React from "react";
-import { IoChevronDownOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 function CartItem({ item, isLast, onQuantityChange, onRemove }) {
-  const safePrice = Number(item.price) || 0;
+  const isOutOfStock = item.stock === 0;
+  const insufficientStock = item.quantity > item.stock && item.stock > 0;
 
   return (
-    <article className={`cart-item ${isLast ? "cart-item-last" : ""}`}>
-      <div className="cart-item-left">
-        <div className="cart-item-image-wrap">
-          <img src={item.image} alt={item.title} className="cart-item-image" />
-        </div>
-
-        <div className="cart-item-content">
-          <h3 className="cart-item-title">{item.title}</h3>
-          <p className="cart-item-details">{item.details}</p>
-          <p className="cart-item-seller">Seller: {item.seller}</p>
-
-          <div className="cart-item-buttons">
-            <button
-              type="button"
-              className="cart-item-remove-btn"
-              onClick={() => onRemove(item.product || item.id)}
-            >
-              Remove
-            </button>
-
-            <button type="button" className="cart-item-save-btn">
-              Save for later
-            </button>
-          </div>
-        </div>
+    <div className={`cart-item ${isLast ? "last" : ""} ${isOutOfStock ? "opacity-50" : ""}`}>
+      <div className="cart-item-image">
+        <img src={item.image} alt={item.title || item.name} />
       </div>
 
-      <div className="cart-item-right">
-        <p className="cart-item-price">${safePrice.toFixed(2)}</p>
+      <div className="cart-item-details">
+        <h6 className={isOutOfStock ? "text-decoration-line-through" : ""}>
+          {item.title || item.name}
+        </h6>
 
-        <div className="cart-qty-select-wrap">
+        {isOutOfStock ? (
+          <span className="text-danger fw-bold text-decoration-line-through">
+            Out of Stock
+          </span>
+        ) : insufficientStock ? (
+          <span className="text-warning fw-bold">
+            Only {item.stock} left
+          </span>
+        ) : (
+          <span className="text-success fw-bold">In Stock</span>
+        )}
+
+        <p>${Number(item.price || 0).toFixed(2)}</p>
+
+        <div className="cart-item-actions">
           <select
             value={item.quantity}
-            onChange={(e) =>
-              onQuantityChange(item.product || item.id, e.target.value)
-            }
-            className="cart-qty-select"
+            onChange={(e) => onQuantityChange(item.product || item.id, e.target.value)}
+            disabled={isOutOfStock}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((q) => (
-              <option key={q} value={q}>
-                Qty: {q}
+            {[...Array(Math.max(item.stock, 1)).keys()].map((num) => (
+              <option key={num + 1} value={num + 1}>
+                Qty: {num + 1}
               </option>
             ))}
           </select>
-          <IoChevronDownOutline className="cart-qty-chevron" />
+
+          <button type="button" onClick={() => onRemove(item.product || item.id)}>
+            Remove
+          </button>
         </div>
+
+        {insufficientStock && (
+          <p className="text-warning mt-2">
+            Your selected quantity exceeds available stock. Please reduce quantity.
+          </p>
+        )}
       </div>
-    </article>
+    </div>
   );
 }
 
