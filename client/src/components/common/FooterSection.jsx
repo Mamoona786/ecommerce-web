@@ -12,7 +12,7 @@ import {
 import { BsBag } from "react-icons/bs";
 import { IoChevronDownOutline } from "react-icons/io5";
 
-const usaFlag = "/flag-us.jpg";
+const usaFlag = "/flag-us.png";
 
 const FooterSection = () => {
   const [languageOpen, setLanguageOpen] = useState(false);
