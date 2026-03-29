@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import "../styles/login.css";
-
-// import loginHeroImg from "../assets/login-hero.png";
 import { loginUser } from "../services/authService";
 
 const loginHeroImg = "/login-hero.png";
