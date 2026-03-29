@@ -8,6 +8,8 @@ import ProductDiscountBanner from "../components/common/ProductDiscountBanner";
 import ProductDetailsTabsSection from "../components/productDetails/ProductDetailsTabsSection";
 import RelatedProductsSection from "../components/productDetails/RelatedProductsSection";
 import "../styles/productDetails.css";
+import { addCartItem } from "../utils/cartHelpers";
+import { addToCart } from "../services/cartService";
 
 import {
   FaStar,
@@ -24,7 +26,6 @@ import {
 
 import { getProductById } from "../services/productService";
 import {
-  addProductToCart,
   getUniqueProductImages,
   isProductSaved,
   toggleSavedProduct,
@@ -70,6 +71,8 @@ function ProductDetails() {
       loadProduct();
     }
   }, [id]);
+
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
 
   const productImages = useMemo(() => {
     return getUniqueProductImages(product);
@@ -121,49 +124,75 @@ function ProductDetails() {
     setIsSaved(savedStatus);
   };
 
-  const handleAddToCart = () => {
-    if (!product) return;
+  const handleAddToCart = async () => {
+  if (!product) return;
 
-    if (Number(product.stock || 0) <= 0) {
-      alert("This product is out of stock.");
-      return;
+  if (Number(product.stock || 0) <= 0) {
+    alert("This product is out of stock.");
+    return;
+  }
+
+  if (quantity > Number(product.stock || 0)) {
+    alert(`Only ${product.stock} item(s) available in stock.`);
+    return;
+  }
+
+  try {
+    if (isAuthenticated) {
+      await addToCart({
+        productId: product._id,
+        quantity,
+        selectedTierPrice,
+      });
+    } else {
+      addCartItem({
+        product,
+        quantity,
+        selectedTierPrice,
+      });
     }
-
-    if (quantity > Number(product.stock || 0)) {
-      alert(`Only ${product.stock} item(s) available in stock.`);
-      return;
-    }
-
-    addProductToCart({
-      product,
-      quantity,
-      selectedTierPrice,
-    });
 
     alert("Product added to cart successfully!");
-  };
+  } catch (error) {
+    console.error("Failed to add product to cart:", error);
+    alert(error?.response?.data?.message || "Failed to add product to cart");
+  }
+};
 
-  const handleBuyNow = () => {
-    if (!product) return;
+  const handleBuyNow = async () => {
+  if (!product) return;
 
-    if (Number(product.stock || 0) <= 0) {
-      alert("This product is out of stock.");
-      return;
+  if (Number(product.stock || 0) <= 0) {
+    alert("This product is out of stock.");
+    return;
+  }
+
+  if (quantity > Number(product.stock || 0)) {
+    alert(`Only ${product.stock} item(s) available in stock.`);
+    return;
+  }
+
+  try {
+    if (isAuthenticated) {
+      await addToCart({
+        productId: product._id,
+        quantity,
+        selectedTierPrice,
+      });
+    } else {
+      addCartItem({
+        product,
+        quantity,
+        selectedTierPrice,
+      });
     }
-
-    if (quantity > Number(product.stock || 0)) {
-      alert(`Only ${product.stock} item(s) available in stock.`);
-      return;
-    }
-
-    addProductToCart({
-      product,
-      quantity,
-      selectedTierPrice,
-    });
 
     navigate("/cart");
-  };
+  } catch (error) {
+    console.error("Failed to buy product now:", error);
+    alert(error?.response?.data?.message || "Failed to add product to cart");
+  }
+};
 
   const handleSendInquiry = () => {
     if (!product?.seller?.name) return;
