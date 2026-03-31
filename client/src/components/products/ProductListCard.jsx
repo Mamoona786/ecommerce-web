@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaHeart, FaStar, FaRegStar } from "react-icons/fa";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
 
@@ -15,7 +16,7 @@ const ProductListCard = ({ product }) => {
     <article className="product-list-card">
       <Link to={`/products/${productId}`} className="product-list-image-wrap">
         <img
-          src={product.image}
+          src={resolveImageSrc(product.image)}
           alt={productName}
           className="product-list-image"
         />

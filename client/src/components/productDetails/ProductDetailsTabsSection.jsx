@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiCheck } from "react-icons/fi";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 const tabs = ["Description", "Reviews", "Shipping", "About seller"];
 
@@ -124,7 +125,7 @@ function ProductDetailsTabsSection({ product, youMayLikeItems = [] }) {
                 >
                   <div className="product-details-you-may-like-image-wrap">
                     <img
-                      src={item.image}
+                      src={resolveImageSrc(item.image)}
                       alt={itemName}
                       className="product-details-you-may-like-image"
                     />

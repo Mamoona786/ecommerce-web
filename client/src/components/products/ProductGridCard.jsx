@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaHeart, FaStar, FaRegStar } from "react-icons/fa";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
 
@@ -12,7 +13,7 @@ const ProductGridCard = ({ product }) => {
     <article className="product-grid-card">
       <Link to={`/products/${productId}`} className="product-grid-image-wrap">
         <img
-          src={product.image}
+          src={resolveImageSrc(product.image)}
           alt={productName}
           className="product-grid-image"
         />

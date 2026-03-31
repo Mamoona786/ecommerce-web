@@ -171,11 +171,11 @@
   font-weight: 800;
   color: #184f38;
   letter-spacing: -0.8px;
-  margin-bottom: 92px;
+  margin-bottom: 30px;
 }
 
 .register-copy h1 {
-  margin: 0 0 14px;
+  margin: 0 0 20px;
   font-size: 40px;
   line-height: 1;
   font-weight: 800;
@@ -184,7 +184,7 @@
 }
 
 .register-copy p {
-  margin: 0 0 44px;
+  margin: 0 0 20px;
   font-size: 16px;
   line-height: 1.55;
   color: #5f7066;
@@ -412,5 +412,88 @@
 
   .register-hero-wrap {
     padding-bottom: 24px;
+  }
+}
+
+.register-welcome-small {
+  font-size: 17px; /* was 20px */
+}
+
+.register-welcome-title {
+  font-size: 42px; /* was 50px */
+}
+
+.register-brand {
+  font-size: 21px; /* was 25px */
+}
+
+.register-copy h1 {
+  font-size: 34px; /* was 40px */
+}
+
+.register-copy p {
+  font-size: 14px; /* was 16px */
+}
+
+.register-field label {
+  font-size: 14px; /* was 16px */
+}
+
+.register-field input {
+  font-size: 14px; /* was 16px */
+}
+
+.register-input-icon,
+.register-password-toggle {
+  font-size: 18px; /* was 21px */
+}
+
+.register-submit-btn {
+  font-size: 17px; /* was 20px */
+}
+
+.register-google-btn {
+  font-size: 15px; /* was 17px */
+}
+
+.register-login-text {
+  font-size: 14px; /* was 16px */
+}
+
+/* 🔽 Responsive Adjustments */
+
+@media (max-width: 1200px) {
+  .register-copy h1 {
+    font-size: 26px; /* was 30px */
+  }
+
+  .register-welcome-title {
+    font-size: 34px; /* was 40px */
+  }
+}
+
+@media (max-width: 640px) {
+  .register-welcome-small {
+    font-size: 17px; /* was 20px */
+  }
+
+  .register-welcome-title {
+    font-size: 32px; /* was 40px */
+  }
+
+  .register-brand {
+    font-size: 20px; /* was 26px */
+  }
+
+  .register-copy h1 {
+    font-size: 34px; /* was 42px */
+  }
+
+  .register-copy p {
+    font-size: 14px; /* was 15px */
+  }
+
+  .register-field label {
+    font-size: 13px; /* was 15px */
   }
 }

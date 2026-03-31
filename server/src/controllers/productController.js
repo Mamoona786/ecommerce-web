@@ -99,7 +99,7 @@ export const getProductById = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json(product);
+    res.status(200).json({ product });
   } catch (error) {
     console.error("Failed to fetch product:", error.message);
     res.status(500).json({ message: "Failed to fetch product" });
@@ -180,5 +180,91 @@ export const createProduct = async (req, res) => {
   } catch (error) {
     console.error("Failed to create product:", error.message);
     res.status(500).json({ message: "Failed to create product" });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  try {
+    const {
+      name,
+      price,
+      image,
+      description,
+      category,
+      stock,
+      brand,
+      shortDescription,
+      subCategory,
+    } = req.body;
+
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (!name?.trim()) {
+      return res.status(400).json({ message: "Product name is required" });
+    }
+
+    if (!image?.trim()) {
+      return res.status(400).json({ message: "Product image is required" });
+    }
+
+    if (!description?.trim()) {
+      return res.status(400).json({ message: "Product description is required" });
+    }
+
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    const existingCategory = await Category.findById(category);
+    if (!existingCategory) {
+      return res.status(404).json({ message: "Selected category not found" });
+    }
+
+    product.name = name.trim();
+    product.price = Number(price || 0);
+    product.image = image.trim();
+    product.description = description.trim();
+    product.category = category;
+    product.stock = Number(stock || 0);
+    product.brand = brand?.trim() || "";
+    product.shortDescription = shortDescription?.trim() || "";
+    product.subCategory = subCategory?.trim() || "";
+
+    await product.save();
+
+    const updatedProduct = await Product.findById(product._id).populate(
+      "category",
+      "category_name description"
+    );
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.error("Failed to update product:", error.message);
+    res.status(500).json({ message: "Failed to update product" });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await Product.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.error("Failed to delete product:", error.message);
+    res.status(500).json({ message: "Failed to delete product" });
   }
 };

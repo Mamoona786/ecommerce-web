@@ -1,4 +1,5 @@
 import Category from "../models/Category.js";
+import Product from "../models/Product.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -23,7 +24,9 @@ export const getCategoryById = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    res.status(200).json(category);
+    res.status(200).json({
+      category,
+    });
   } catch (error) {
     console.error("Failed to fetch category:", error.message);
     res.status(500).json({ message: "Failed to fetch category" });
@@ -58,5 +61,72 @@ export const createCategory = async (req, res) => {
   } catch (error) {
     console.error("Failed to create category:", error.message);
     res.status(500).json({ message: "Failed to create category" });
+  }
+};
+
+export const updateCategory = async (req, res) => {
+  try {
+    const { category_name, description } = req.body;
+
+    if (!category_name?.trim()) {
+      return res.status(400).json({ message: "Category name is required" });
+    }
+
+    const category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    const duplicateCategory = await Category.findOne({
+      _id: { $ne: req.params.id },
+      category_name: { $regex: `^${category_name.trim()}$`, $options: "i" },
+    });
+
+    if (duplicateCategory) {
+      return res.status(409).json({ message: "Category already exists" });
+    }
+
+    category.category_name = category_name.trim();
+    category.description = description?.trim() || "";
+
+    await category.save();
+
+    res.status(200).json({
+      message: "Category updated successfully",
+      category,
+    });
+  } catch (error) {
+    console.error("Failed to update category:", error.message);
+    res.status(500).json({ message: "Failed to update category" });
+  }
+};
+
+export const deleteCategory = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    const productsUsingCategory = await Product.countDocuments({
+      category: category._id,
+    });
+
+    if (productsUsingCategory > 0) {
+      return res.status(400).json({
+        message: "Cannot delete category because products are using it",
+      });
+    }
+
+    await Category.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: "Category deleted successfully",
+    });
+  } catch (error) {
+    console.error("Failed to delete category:", error.message);
+    res.status(500).json({ message: "Failed to delete category" });
   }
 };
