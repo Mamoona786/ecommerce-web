@@ -24,8 +24,9 @@ const parseSortOption = (sort) => {
 };
 
 export const getProducts = async (req, res) => {
-  await connectDB();
   try {
+    await connectDB();
+
     const {
       search = "",
       category = "",
@@ -84,9 +85,9 @@ export const getProducts = async (req, res) => {
       totalPages: Math.ceil(total / pageLimit),
     });
   } catch (error) {
-  console.error("Error:", error);
-  res.status(500).json({ message: error.message });
-}
+    console.error("Failed to fetch products:", error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const getProductById = async (req, res) => {
