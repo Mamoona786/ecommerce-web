@@ -1,3 +1,4 @@
+import connectDB from "../config/db.js";
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 
@@ -24,6 +25,8 @@ const parseSortOption = (sort) => {
 
 export const getProducts = async (req, res) => {
   try {
+    await connectDB();
+
     const {
       search = "",
       category = "",
@@ -82,9 +85,9 @@ export const getProducts = async (req, res) => {
       totalPages: Math.ceil(total / pageLimit),
     });
   } catch (error) {
-  console.error("Error:", error);
-  res.status(500).json({ message: error.message });
-}
+    console.error("Failed to fetch products:", error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const getProductById = async (req, res) => {
