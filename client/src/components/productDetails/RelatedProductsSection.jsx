@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
 
@@ -25,7 +26,7 @@ function RelatedProductsSection({ items = [] }) {
               >
                 <div className="related-product-image-wrap">
                   <img
-                    src={product.image}
+                    src={resolveImageSrc(product.image)}
                     alt={productName}
                     className="related-product-image"
                   />

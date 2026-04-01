@@ -1,10 +1,32 @@
 import { addToCart as addToCartApi } from "../services/cartService";
 
+export const resolveImageSrc = (image) => {
+  if (!image) return "/placeholder.png";
+
+  const trimmed = String(image).trim();
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("data:")
+  ) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith("/")) {
+    return trimmed;
+  }
+
+  return `/${trimmed}`;
+};
+
 export const getUniqueProductImages = (product) => {
   if (!product) return [];
 
   const rawImages = [product.image, ...(product.thumbnails || [])].filter(Boolean);
-  return [...new Set(rawImages)];
+  const uniqueImages = [...new Set(rawImages)];
+
+  return uniqueImages.map(resolveImageSrc);
 };
 
 export const getSavedProducts = () => {
@@ -38,7 +60,7 @@ export const toggleSavedProduct = (product) => {
       {
         id: productId,
         title: product.name || product.title,
-        image: product.image,
+        image: resolveImageSrc(product.image),
         price: product.price,
       },
     ];
@@ -103,6 +125,7 @@ export const addProductToCart = async ({
             quantity: item.quantity + quantity,
             price: itemPrice,
             stock: Number(product?.stock || 0),
+            image: resolveImageSrc(product.image),
           }
         : item
     );
@@ -122,7 +145,7 @@ export const addProductToCart = async ({
       product.category ||
       "",
     seller: product?.seller?.name || "Unknown seller",
-    image: product.image,
+    image: resolveImageSrc(product.image),
     price: itemPrice,
     quantity,
     stock: Number(product?.stock || 0),

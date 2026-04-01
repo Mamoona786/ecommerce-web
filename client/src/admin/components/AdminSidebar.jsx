@@ -13,6 +13,7 @@ import {
   FaList,
 } from "react-icons/fa";
 import "../styles/adminSidebar.css";
+import { useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -23,6 +24,16 @@ const AdminSidebar = () => {
 
   const isActive = (path) => location.pathname === path;
   const isGroupActive = (paths = []) => paths.includes(location.pathname);
+
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  if (window.confirm("Are you sure you want to logout?")) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  }
+};
 
   return (
     <aside className="admin-sidebar">
@@ -216,7 +227,20 @@ const AdminSidebar = () => {
         </Link>
       </div>
 
+      <div className="admin-sidebar-logout">
+  <button
+    type="button"
+    className="admin-sidebar-item logout-btn"
+    onClick={handleLogout}
+  >
+    <span className="admin-sidebar-item-left">
+      <FaAngleDoubleLeft className="admin-sidebar-icon" />
+      <span>Logout</span>
+    </span>
+  </button>
+</div>
       <div className="admin-sidebar-bottom-line" />
+
     </aside>
   );
 };

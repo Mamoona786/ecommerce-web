@@ -1,4 +1,5 @@
 import React from "react";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 function CartItem({ item, isLast, onQuantityChange, onRemove }) {
   const isOutOfStock = item.hasKnownStock ? item.stock === 0 : false;
@@ -13,7 +14,7 @@ function CartItem({ item, isLast, onQuantityChange, onRemove }) {
   return (
     <div className={`cart-item ${isLast ? "last" : ""} ${isOutOfStock ? "opacity-50" : ""}`}>
       <div className="cart-item-image">
-        <img src={item.image} alt={productName} />
+        <img src={resolveImageSrc(item.image)} alt={productName} />
       </div>
 
       <div className="cart-item-details">

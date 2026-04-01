@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
 
@@ -20,7 +21,7 @@ const RecommendedSection = ({ items = [] }) => {
           >
             <div className="recommended-image-wrap">
               <img
-                src={item.image}
+                src={resolveImageSrc(item.image)}
                 alt={item.title}
                 className="recommended-image"
               />

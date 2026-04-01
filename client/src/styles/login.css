@@ -41,12 +41,12 @@
   font-weight: 800;
   color: #1f5b41;
   letter-spacing: -0.8px;
-  margin-bottom: 92px;
+  margin-bottom: 30px;
 }
 
 .login-copy h1 {
-  margin: 0 0 18px;
-  font-size: 56px;
+  margin: 0 0 20px;
+  font-size: 40px;
   line-height: 1;
   font-weight: 800;
   color: #184f38;
@@ -408,5 +408,80 @@
 
   .register-text {
     margin-top: 34px;
+  }
+}
+
+
+.login-brand {
+  font-size: 24px; /* was 29px */
+}
+
+.login-copy h1 {
+  font-size: 46px; /* was 56px */
+}
+
+.login-copy p {
+  font-size: 15px; /* was 17px */
+}
+
+.login-field label {
+  font-size: 14px; /* was 16px */
+}
+
+.login-field input {
+  font-size: 14px; /* was 16px */
+}
+
+.login-btn {
+  font-size: 17px; /* was 20px */
+}
+
+.google-btn {
+  font-size: 15px; /* was 17px */
+}
+
+.register-text {
+  font-size: 14px; /* was 16px */
+}
+
+.welcome-small {
+  font-size: 22px; /* was 26px */
+}
+
+.login-right h2 {
+  font-size: 52px; /* was 62px */
+}
+
+/* 🔽 Responsive Adjustments */
+
+@media (max-width: 1200px) {
+  .login-copy h1 {
+    font-size: 40px; /* was 48px */
+  }
+
+  .login-right h2 {
+    font-size: 44px; /* was 52px */
+  }
+}
+
+@media (max-width: 640px) {
+  .login-brand {
+    font-size: 20px; /* was 24px */
+  }
+
+  .login-copy h1 {
+    font-size: 32px; /* was 40px */
+  }
+
+  .login-copy p {
+    font-size: 14px; /* was 15px */
+  }
+
+  .welcome-small {
+    font-size: 18px; /* was 20px */
+  }
+
+  .login-right h2 {
+    font-size: 32px; /* was 40px */
   }
 }

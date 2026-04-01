@@ -29,6 +29,7 @@ import {
   getUniqueProductImages,
   isProductSaved,
   toggleSavedProduct,
+  resolveImageSrc,
 } from "../utils/productDetailsHelpers";
 
 const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
@@ -52,13 +53,15 @@ function ProductDetails() {
         setError("");
 
         const data = await getProductById(id);
-        setProduct(data);
+        const productData = data?.product || data;
 
-        const allImages = getUniqueProductImages(data);
-        setSelectedImage(allImages[0] || "");
+        setProduct(productData);
+
+        const allImages = getUniqueProductImages(productData);
+        setSelectedImage(allImages[0] || resolveImageSrc(productData?.image));
         setSelectedTierIndex(0);
         setQuantity(1);
-        setIsSaved(isProductSaved(data?._id || data?.id));
+        setIsSaved(isProductSaved(productData?._id || productData?.id));
       } catch (err) {
         console.error("Failed to fetch product:", err);
         setError("Product not found.");
@@ -133,6 +136,13 @@ function ProductDetails() {
   const handleAddToCart = async () => {
     if (!product) return;
 
+    const productId = product._id || product.id;
+
+    if (!productId) {
+      alert("Product ID is missing.");
+      return;
+    }
+
     if (Number(product.stock || 0) <= 0) {
       alert("This product is out of stock.");
       return;
@@ -146,13 +156,16 @@ function ProductDetails() {
     try {
       if (isAuthenticated) {
         await addToCart({
-          productId: product._id,
+          productId,
           quantity,
           selectedTierPrice,
         });
       } else {
         addCartItem({
-          product,
+          product: {
+            ...product,
+            image: resolveImageSrc(product.image),
+          },
           quantity,
           selectedTierPrice,
         });
@@ -168,6 +181,13 @@ function ProductDetails() {
   const handleBuyNow = async () => {
     if (!product) return;
 
+    const productId = product._id || product.id;
+
+    if (!productId) {
+      alert("Product ID is missing.");
+      return;
+    }
+
     if (Number(product.stock || 0) <= 0) {
       alert("This product is out of stock.");
       return;
@@ -181,13 +201,16 @@ function ProductDetails() {
     try {
       if (isAuthenticated) {
         await addToCart({
-          productId: product._id,
+          productId,
           quantity,
           selectedTierPrice,
         });
       } else {
         addCartItem({
-          product,
+          product: {
+            ...product,
+            image: resolveImageSrc(product.image),
+          },
           quantity,
           selectedTierPrice,
         });
@@ -258,7 +281,7 @@ function ProductDetails() {
             <div className="product-details-left">
               <div className="product-main-image-box">
                 <img
-                  src={selectedImage || product.image}
+                  src={selectedImage || resolveImageSrc(product.image)}
                   alt={product.name}
                   className="product-main-image"
                 />
