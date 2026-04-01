@@ -1,19 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaRegCommentDots,
-  FaRegHeart,
   FaShoppingCart,
   FaSearch,
+  FaBoxOpen,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
 
 const Header = () => {
   const navigate = useNavigate();
+
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState("All category");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const syncUser = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+    };
+
+    syncUser();
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("storage", syncUser);
+    };
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -24,6 +49,15 @@ const Header = () => {
 
     navigate(`/products${params.toString() ? `?${params.toString()}` : ""}`);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+  };
+
+  const isAdmin = user?.role === "admin";
 
   return (
     <header className="header">
@@ -51,14 +85,11 @@ const Header = () => {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option>All category</option>
-              <option>Automobiles</option>
-              <option>Clothes and wear</option>
-              <option>Home interiors</option>
-              <option>Computer and tech</option>
-              <option>Tools, equipments</option>
-              <option>Sports and outdoor</option>
-              <option>Animal and pets</option>
-              <option>Machinery tools</option>
+              <option>Electronics</option>
+              <option>Home</option>
+              <option>Fashion</option>
+              <option>Computers</option>
+              <option>Wearables</option>
             </select>
             <IoChevronDownOutline className="select-chevron" />
           </div>
@@ -70,25 +101,51 @@ const Header = () => {
         </form>
 
         <div className="top-icons">
-          <Link to="/login" className="icon-item">
-            <FaUser className="icon" />
-            <span className="icon-label">Profile</span>
-          </Link>
+          {user ? (
+            <>
+              <button className="icon-item icon-item-button" type="button">
+                <FaUser className="icon" />
+                <span className="icon-label">
+                  {user.username || (isAdmin ? "Admin" : "Profile")}
+                </span>
+              </button>
 
-          <button className="icon-item" type="button">
-            <FaRegCommentDots className="icon" />
-            <span className="icon-label">Message</span>
-          </button>
+              {!isAdmin && (
+                <button className="icon-item icon-item-button" type="button">
+                  <FaBoxOpen className="icon" />
+                  <span className="icon-label">Orders</span>
+                </button>
+              )}
 
-          <button className="icon-item" type="button">
-            <FaRegHeart className="icon" />
-            <span className="icon-label">Orders</span>
-          </button>
+              <button
+                className="icon-item icon-item-button"
+                type="button"
+                onClick={handleLogout}
+              >
+                <FaSignOutAlt className="icon" />
+                <span className="icon-label">Logout</span>
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="icon-item">
+              <FaUser className="icon" />
+              <span className="icon-label">Login</span>
+            </Link>
+          )}
 
-          <Link to="/cart" className="icon-item">
-            <FaShoppingCart className="icon" />
-            <span className="icon-label">My cart</span>
-          </Link>
+          {!isAdmin && (
+            <>
+              <button className="icon-item icon-item-button" type="button">
+                <FaRegCommentDots className="icon" />
+                <span className="icon-label">Message</span>
+              </button>
+
+              <Link to="/cart" className="icon-item">
+                <FaShoppingCart className="icon" />
+                <span className="icon-label">My cart</span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

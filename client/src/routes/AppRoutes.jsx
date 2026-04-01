@@ -4,8 +4,29 @@ import Products from "../pages/Products";
 import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
 import Login from "../pages/Login";
-import Signup from "../pages/Signup";
-import Admin from "../pages/Admin";
+import Register from "../pages/Register";
+
+import AdminRoute from "../components/common/AdminRoute";
+
+import AdminDashboard from "../admin/pages/AdminDashboard";
+
+import AddCategory from "../admin/pages/categories/AddCategory";
+import ViewCategories from "../admin/pages/categories/ViewCategories";
+import EditCategory from "../admin/pages/categories/EditCategory";
+
+import AddProduct from "../admin/pages/products/AddProduct";
+import ViewProducts from "../admin/pages/products/ViewProducts";
+import EditProduct from "../admin/pages/products/EditProduct";
+
+import AddUser from "../admin/pages/users/AddUser";
+import ViewUsers from "../admin/pages/users/ViewUsers";
+import EditUser from "../admin/pages/users/EditUser";
+
+import AdminCart from "../admin/pages/cart/AdminCart";
+import EditCart from "../admin/pages/cart/EditCart";
+
+import AdminOrders from "../admin/pages/orders/AdminOrders";
+import EditOrder from "../admin/pages/orders/EditOrder";
 
 function AppRoutes() {
   return (
@@ -15,8 +36,29 @@ function AppRoutes() {
       <Route path="/products/:id" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/register" element={<Register />} />
+
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route path="/admin/categories/add" element={<AddCategory />} />
+        <Route path="/admin/categories/view" element={<ViewCategories />} />
+        <Route path="/admin/categories/edit/:id" element={<EditCategory />} />
+
+        <Route path="/admin/products/add" element={<AddProduct />} />
+        <Route path="/admin/products/view" element={<ViewProducts />} />
+        <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+
+        <Route path="/admin/users/add" element={<AddUser />} />
+        <Route path="/admin/users/view" element={<ViewUsers />} />
+        <Route path="/admin/users/edit/:id" element={<EditUser />} />
+
+        <Route path="/admin/cart" element={<AdminCart />} />
+        <Route path="/admin/carts/edit/:id" element={<EditCart />} />
+
+        <Route path="/admin/orders" element={<AdminOrders />} />
+        <Route path="/admin/orders/edit/:id" element={<EditOrder />} />
+      </Route>
     </Routes>
   );
 }

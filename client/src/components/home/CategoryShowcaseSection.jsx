@@ -1,11 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
+
 const CategoryShowcaseSection = ({
   title,
   buttonText,
   bannerImage,
-  items,
+  items = [],
   sectionClass = "",
   sectionLink = "/products",
 }) => {
@@ -30,9 +32,9 @@ const CategoryShowcaseSection = ({
       </div>
 
       <div className="category-showcase-grid">
-        {items.map((item, index) => (
+        {items.map((item) => (
           <button
-            key={`${item.name}-${index}`}
+            key={item.id}
             type="button"
             className="showcase-card showcase-card-button"
             onClick={() => navigate(`/products/${item.id}`)}
@@ -42,7 +44,7 @@ const CategoryShowcaseSection = ({
               <p className="showcase-card-price">
                 <span>From</span>
                 <br />
-                {item.price}
+                {formatCurrency(item.price)}
               </p>
             </div>
 

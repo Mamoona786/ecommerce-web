@@ -8,6 +8,8 @@ import ProductDiscountBanner from "../components/common/ProductDiscountBanner";
 import ProductDetailsTabsSection from "../components/productDetails/ProductDetailsTabsSection";
 import RelatedProductsSection from "../components/productDetails/RelatedProductsSection";
 import "../styles/productDetails.css";
+import { addCartItem } from "../utils/cartHelpers";
+import { addToCart } from "../services/cartService";
 
 import {
   FaStar,
@@ -22,8 +24,15 @@ import {
   FiHeart,
 } from "react-icons/fi";
 
-import { getResolvedProductById } from "../services/productService";
-import { getProductsByIds } from "../data/productCatalog";
+import { getProductById } from "../services/productService";
+import {
+  getUniqueProductImages,
+  isProductSaved,
+  toggleSavedProduct,
+  resolveImageSrc,
+} from "../utils/productDetailsHelpers";
+
+const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
 
 function ProductDetails() {
   const { id } = useParams();
@@ -31,6 +40,8 @@ function ProductDetails() {
 
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
+  const [selectedTierIndex, setSelectedTierIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -40,28 +51,187 @@ function ProductDetails() {
       try {
         setLoading(true);
         setError("");
-        const data = await getResolvedProductById(id);
-        setProduct(data);
-        setSelectedImage(data?.image || "");
+
+        const data = await getProductById(id);
+        const productData = data?.product || data;
+
+        setProduct(productData);
+
+        const allImages = getUniqueProductImages(productData);
+        setSelectedImage(allImages[0] || resolveImageSrc(productData?.image));
+        setSelectedTierIndex(0);
+        setQuantity(1);
+        setIsSaved(isProductSaved(productData?._id || productData?.id));
       } catch (err) {
+        console.error("Failed to fetch product:", err);
         setError("Product not found.");
       } finally {
         setLoading(false);
       }
     };
 
-    loadProduct();
+    if (id) {
+      loadProduct();
+    }
   }, [id]);
+
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+
+  const productImages = useMemo(() => {
+    return getUniqueProductImages(product);
+  }, [product]);
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
-    return getProductsByIds(product.relatedIds);
+    return Array.isArray(product.relatedIds) ? product.relatedIds : [];
   }, [product]);
 
   const youMayLikeItems = useMemo(() => {
     if (!product) return [];
-    return getProductsByIds(product.youMayLikeIds);
+    return Array.isArray(product.youMayLikeIds) ? product.youMayLikeIds : [];
   }, [product]);
+
+  const selectedTierPrice = useMemo(() => {
+    if (!product?.priceTiers?.length) return Number(product?.price || 0);
+    return Number(product.priceTiers[selectedTierIndex]?.price || product.price || 0);
+  }, [product, selectedTierIndex]);
+
+  const categoryName = product?.category?.category_name || "";
+
+  const breadcrumbItems = useMemo(() => {
+    if (!product) {
+      return [
+        { label: "Home", to: "/" },
+        { label: "Products", to: "/products" },
+      ];
+    }
+
+    return [
+      { label: "Home", to: "/" },
+      { label: "Products", to: "/products" },
+      ...(categoryName
+        ? [
+            {
+              label: categoryName,
+              to: `/products?category=${encodeURIComponent(categoryName)}`,
+            },
+          ]
+        : []),
+      { label: product.name },
+    ];
+  }, [product, categoryName]);
+
+  const maxQty = useMemo(() => {
+    const stock = Number(product?.stock || 0);
+    if (stock <= 0) return 1;
+    return Math.min(stock, 10);
+  }, [product]);
+
+  const handleSaveToggle = () => {
+    if (!product) return;
+    const savedStatus = toggleSavedProduct(product);
+    setIsSaved(savedStatus);
+  };
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    const productId = product._id || product.id;
+
+    if (!productId) {
+      alert("Product ID is missing.");
+      return;
+    }
+
+    if (Number(product.stock || 0) <= 0) {
+      alert("This product is out of stock.");
+      return;
+    }
+
+    if (quantity > Number(product.stock || 0)) {
+      alert(`Only ${product.stock} item(s) available in stock.`);
+      return;
+    }
+
+    try {
+      if (isAuthenticated) {
+        await addToCart({
+          productId,
+          quantity,
+          selectedTierPrice,
+        });
+      } else {
+        addCartItem({
+          product: {
+            ...product,
+            image: resolveImageSrc(product.image),
+          },
+          quantity,
+          selectedTierPrice,
+        });
+      }
+
+      alert("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Failed to add product to cart:", error);
+      alert(error?.response?.data?.message || "Failed to add product to cart");
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!product) return;
+
+    const productId = product._id || product.id;
+
+    if (!productId) {
+      alert("Product ID is missing.");
+      return;
+    }
+
+    if (Number(product.stock || 0) <= 0) {
+      alert("This product is out of stock.");
+      return;
+    }
+
+    if (quantity > Number(product.stock || 0)) {
+      alert(`Only ${product.stock} item(s) available in stock.`);
+      return;
+    }
+
+    try {
+      if (isAuthenticated) {
+        await addToCart({
+          productId,
+          quantity,
+          selectedTierPrice,
+        });
+      } else {
+        addCartItem({
+          product: {
+            ...product,
+            image: resolveImageSrc(product.image),
+          },
+          quantity,
+          selectedTierPrice,
+        });
+      }
+
+      navigate("/cart");
+    } catch (error) {
+      console.error("Failed to buy product now:", error);
+      alert(error?.response?.data?.message || "Failed to add product to cart");
+    }
+  };
+
+  const handleSendInquiry = () => {
+    if (!product?.seller?.name) return;
+    navigate(`/products?seller=${encodeURIComponent(product.seller.name)}`);
+  };
+
+  const handleSellerProfile = () => {
+    if (!product?.seller?.name) return;
+    navigate(`/products?seller=${encodeURIComponent(product.seller.name)}`);
+  };
 
   if (loading) {
     return (
@@ -105,22 +275,22 @@ function ProductDetails() {
 
       <main className="product-details-page">
         <div className="container">
-          <ProductsBreadcrumb />
+          <ProductsBreadcrumb items={breadcrumbItems} />
 
           <section className="product-details-card">
             <div className="product-details-left">
               <div className="product-main-image-box">
                 <img
-                  src={selectedImage || product.image}
-                  alt={product.title}
+                  src={selectedImage || resolveImageSrc(product.image)}
+                  alt={product.name}
                   className="product-main-image"
                 />
               </div>
 
               <div className="product-thumbnails-row">
-                {(product.thumbnails || []).map((thumb, index) => (
+                {productImages.map((thumb, index) => (
                   <button
-                    key={index}
+                    key={`${thumb}-${index}`}
                     type="button"
                     className={`product-thumb-btn ${
                       selectedImage === thumb ? "product-thumb-btn-active" : ""
@@ -140,10 +310,13 @@ function ProductDetails() {
             <div className="product-details-center">
               <div className="product-stock-status">
                 <FaCheck />
-                <span>{product.stockStatus}</span>
+                <span>
+                  {product.stockStatus}
+                  {typeof product.stock === "number" ? ` (${product.stock} left)` : ""}
+                </span>
               </div>
 
-              <h1 className="product-details-title">{product.title}</h1>
+              <h1 className="product-details-title">{product.name}</h1>
 
               <div className="product-rating-row">
                 <div className="product-rating-stars">
@@ -169,16 +342,73 @@ function ProductDetails() {
 
               <div className="product-tier-pricing">
                 {(product.priceTiers || []).map((tier, index) => (
-                  <div
+                  <button
+                    type="button"
                     key={`${tier.price}-${tier.qty}`}
                     className={`product-tier-price-item ${
-                      index === 0 ? "product-tier-price-item-active" : ""
+                      selectedTierIndex === index
+                        ? "product-tier-price-item-selected"
+                        : index === 0
+                        ? "product-tier-price-item-active"
+                        : ""
                     }`}
+                    onClick={() => setSelectedTierIndex(index)}
                   >
-                    <h3>{tier.price}</h3>
+                    <h3>{formatCurrency(tier.price)}</h3>
                     <p>{tier.qty}</p>
-                  </div>
+                  </button>
                 ))}
+              </div>
+
+              {!product.priceTiers?.length && (
+                <div className="product-tier-pricing">
+                  <button
+                    type="button"
+                    className="product-tier-price-item product-tier-price-item-selected"
+                  >
+                    <h3>{formatCurrency(product.price)}</h3>
+                    <p>Single item price</p>
+                  </button>
+                </div>
+              )}
+
+              <div className="product-action-row">
+                <div className="product-qty-select-wrap">
+                  <label htmlFor="product-qty" className="product-qty-label">
+                    Qty
+                  </label>
+                  <select
+                    id="product-qty"
+                    className="product-qty-select"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    disabled={Number(product.stock || 0) <= 0}
+                  >
+                    {Array.from({ length: maxQty }, (_, i) => i + 1).map((qty) => (
+                      <option key={qty} value={qty}>
+                        {qty}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  className="product-add-cart-btn"
+                  onClick={handleAddToCart}
+                  disabled={Number(product.stock || 0) <= 0}
+                >
+                  Add to cart
+                </button>
+
+                <button
+                  type="button"
+                  className="product-buy-now-btn"
+                  onClick={handleBuyNow}
+                  disabled={Number(product.stock || 0) <= 0}
+                >
+                  Buy now
+                </button>
               </div>
 
               <div className="product-specs-table">
@@ -225,28 +455,29 @@ function ProductDetails() {
                   </div>
                 </div>
 
-                <button className="supplier-primary-btn" type="button">
+                <button
+                  className="supplier-primary-btn"
+                  type="button"
+                  onClick={handleSendInquiry}
+                >
                   Send inquiry
                 </button>
+
                 <button
                   className="supplier-secondary-btn"
                   type="button"
-                  onClick={() =>
-                    navigate(
-                      `/products?seller=${encodeURIComponent(
-                        product.seller?.name || ""
-                      )}`
-                    )
-                  }
+                  onClick={handleSellerProfile}
                 >
                   Seller&apos;s profile
                 </button>
               </div>
 
               <button
-                className="save-later-btn"
+                className={`save-later-btn ${
+                  isSaved ? "save-later-btn-active" : ""
+                }`}
                 type="button"
-                onClick={() => setIsSaved((prev) => !prev)}
+                onClick={handleSaveToggle}
               >
                 <FiHeart />
                 <span>{isSaved ? "Saved" : "Save for later"}</span>

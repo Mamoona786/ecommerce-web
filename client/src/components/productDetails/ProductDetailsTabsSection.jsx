@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiCheck } from "react-icons/fi";
+import { resolveImageSrc } from "../../utils/productDetailsHelpers";
 
 const tabs = ["Description", "Reviews", "Shipping", "About seller"];
 
@@ -31,50 +32,75 @@ function ProductDetailsTabsSection({ product, youMayLikeItems = [] }) {
             {activeTab === "Description" && (
               <>
                 <p className="product-details-description-text">
-                  {product?.shortDescription}
+                  {product?.shortDescription || "No description available for this product."}
                 </p>
 
                 <div className="product-details-spec-table">
-                  {(product?.detailSpecRows || []).map((row) => (
-                    <div className="product-details-spec-table-row" key={row.label}>
-                      <div className="product-details-spec-table-label">
-                        {row.label}
+                  {(product?.detailSpecRows || []).length > 0 ? (
+                    (product?.detailSpecRows || []).map((row) => (
+                      <div className="product-details-spec-table-row" key={row.label}>
+                        <div className="product-details-spec-table-label">
+                          {row.label}
+                        </div>
+                        <div className="product-details-spec-table-value">
+                          {row.value}
+                        </div>
                       </div>
-                      <div className="product-details-spec-table-value">
-                        {row.value}
-                      </div>
+                    ))
+                  ) : (
+                    <div className="product-details-tab-placeholder">
+                      No technical specifications available.
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 <div className="product-details-feature-list">
-                  {(product?.features || []).map((feature, index) => (
-                    <div className="product-details-feature-item" key={index}>
-                      <span className="product-details-feature-icon">
-                        <FiCheck />
-                      </span>
-                      <span>{feature}</span>
+                  {(product?.features || []).length > 0 ? (
+                    (product?.features || []).map((feature, index) => (
+                      <div className="product-details-feature-item" key={index}>
+                        <span className="product-details-feature-icon">
+                          <FiCheck />
+                        </span>
+                        <span>{feature}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="product-details-tab-placeholder">
+                      No product features available.
                     </div>
-                  ))}
+                  )}
                 </div>
               </>
             )}
 
             {activeTab === "Reviews" && (
               <div className="product-details-tab-placeholder">
-                {product?.reviews || 0} reviews available for this product.
+                <strong>{product?.reviews || 0}</strong> reviews available for this product.
+                <br />
+                Current rating: <strong>{product?.rating || 0}</strong>/5
               </div>
             )}
 
             {activeTab === "Shipping" && (
               <div className="product-details-tab-placeholder">
-                {product?.shipping || "Worldwide shipping"}.
+                Shipping method:{" "}
+                <strong>{product?.shipping || "Worldwide shipping"}</strong>
+                <br />
+                Seller shipping coverage:{" "}
+                <strong>{product?.seller?.shipping || "Worldwide shipping"}</strong>
               </div>
             )}
 
             {activeTab === "About seller" && (
               <div className="product-details-tab-placeholder">
-                Seller: {product?.seller?.name} — {product?.seller?.location}
+                Seller: <strong>{product?.seller?.name || "Unknown seller"}</strong>
+                <br />
+                Location: <strong>{product?.seller?.location || "N/A"}</strong>
+                <br />
+                Status:{" "}
+                <strong>
+                  {product?.seller?.verified ? "Verified Seller" : "Standard Seller"}
+                </strong>
               </div>
             )}
           </div>
@@ -86,31 +112,36 @@ function ProductDetailsTabsSection({ product, youMayLikeItems = [] }) {
           <h3 className="product-details-you-may-like-title">You may like</h3>
 
           <div className="product-details-you-may-like-list">
-            {youMayLikeItems.map((item) => (
-              <article
-                className="product-details-you-may-like-item"
-                key={item.id}
-                onClick={() => navigate(`/products/${item.id}`)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="product-details-you-may-like-image-wrap">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="product-details-you-may-like-image"
-                  />
-                </div>
+            {youMayLikeItems.map((item) => {
+              const itemId = item._id || item.id;
+              const itemName = item.name || item.title;
 
-                <div className="product-details-you-may-like-content">
-                  <h4 className="product-details-you-may-like-item-title">
-                    {item.title}
-                  </h4>
-                  <p className="product-details-you-may-like-price">
-                    {item.price}
-                  </p>
-                </div>
-              </article>
-            ))}
+              return (
+                <article
+                  className="product-details-you-may-like-item"
+                  key={itemId}
+                  onClick={() => navigate(`/products/${itemId}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="product-details-you-may-like-image-wrap">
+                    <img
+                      src={resolveImageSrc(item.image)}
+                      alt={itemName}
+                      className="product-details-you-may-like-image"
+                    />
+                  </div>
+
+                  <div className="product-details-you-may-like-content">
+                    <h4 className="product-details-you-may-like-item-title">
+                      {itemName}
+                    </h4>
+                    <p className="product-details-you-may-like-price">
+                      ${Number(item.price || 0).toFixed(2)}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </aside>
