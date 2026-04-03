@@ -67,9 +67,13 @@ const Login = () => {
       }
 
       navigate(from, { replace: true });
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
+    } catch (error) {
+  console.error("Login failed:", error);
+  res.status(500).json({
+    message: "Login failed",
+    error: error.message,
+  });
+}finally {
       setLoading(false);
     }
   };
