@@ -1,8 +1,11 @@
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
+import connectDB from "../config/db.js";
 
 export const registerUser = async (req, res) => {
   try {
+    await connectDB();
+
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -13,7 +16,9 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 8 characters" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(409).json({ message: "User already exists with this email" });
@@ -21,7 +26,7 @@ export const registerUser = async (req, res) => {
 
     const user = await User.create({
       username,
-      email,
+      email: normalizedEmail,
       password,
       role: "user",
     });
@@ -37,14 +42,17 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Registration failed:", error.message);
-    res.status(500).json({ message: "Registration failed" });
+    console.error("Registration failed:", error);
+    res.status(500).json({ message: "Registration failed", error: error.message });
   }
 };
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    await connectDB();
+
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const password = String(req.body.password || "");
 
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
@@ -73,8 +81,8 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login failed:", error.message);
-    res.status(500).json({ message: "Login failed" });
+    console.error("Login failed:", error);
+    res.status(500).json({ message: "Login failed", error: error.message });
   }
 };
 

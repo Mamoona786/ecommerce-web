@@ -1,8 +1,11 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import connectDB from "../config/db.js";
 
 export const protect = async (req, res, next) => {
   try {
+    await connectDB();
+
     let token;
 
     if (req.headers.authorization?.startsWith("Bearer ")) {
@@ -24,6 +27,10 @@ export const protect = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Not authorized, invalid token" });
+    console.error("Protect middleware error:", error);
+    return res.status(401).json({
+      message: "Not authorized, invalid token",
+      error: error.message,
+    });
   }
 };
