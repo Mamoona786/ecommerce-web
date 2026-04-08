@@ -49,6 +49,51 @@ The project is developed based on a Figma design and includes:
 
 ---
 
+## 📸 Screenshots
+
+### 🖥️ Frontend UI
+
+![Frontend 1](screenshots/frontend1.jpg)
+![Frontend 2](screenshots/frontend2.jpg)
+![Frontend 3](screenshots/frontend3.jpg)
+![Frontend 4](screenshots/frontend4.jpg)
+![Frontend 5](screenshots/frontend5.jpg)
+![Frontend 6](screenshots/frontend6.jpg)
+![Frontend 7](screenshots/frontend7.jpg)
+![Frontend 8](screenshots/frontend8.jpg)
+![Frontend 9](screenshots/frontend9.jpg)
+![Frontend 10](screenshots/frontend10.jpg)
+![Frontend 11](screenshots/frontend11.jpg)
+![Frontend 12](screenshots/frontend12.jpg)
+![Frontend 13](screenshots/frontend13.jpg)
+![Frontend 14](screenshots/frontend14.jpg)
+![Frontend 15](screenshots/frontend15.jpg)
+![Frontend 16](screenshots/frontend16.jpg)
+![Frontend 17](screenshots/frontend17.jpg)
+![Frontend 18](screenshots/frontend18.jpg)
+![Frontend 19](screenshots/frontend19.jpg)
+![Frontend 20](screenshots/frontend20.jpg)
+![Frontend 21](screenshots/frontend21.jpg)
+![Frontend 22](screenshots/frontend22.jpg)
+![Frontend 23](screenshots/frontend23.jpg)
+![Frontend 24](screenshots/frontend24.jpg)
+![Frontend 25](screenshots/frontend25.jpg)
+![Frontend 26](screenshots/frontend26.jpg)
+![Frontend 27](screenshots/frontend27.jpg)
+![Frontend 28](screenshots/frontend28.jpg)
+![Frontend 29](screenshots/frontend29.jpg)
+![Frontend 30](screenshots/frontend30.jpg)
+![Frontend 31](screenshots/frontend31.jpg)
+![Frontend 32](screenshots/frontend32.jpg)
+![Frontend 33](screenshots/frontend33.jpg)
+![Frontend 34](screenshots/frontend34.jpg)
+![Frontend 35](screenshots/frontend35.jpg)
+![Frontend 36](screenshots/frontend36.jpg)
+![Frontend 37](screenshots/frontend37.jpg)
+![Frontend 38](screenshots/frontend38.jpg)
+![Frontend 39](screenshots/frontend39.jpg)
+
+---
 
 ## ✨ Features
 
@@ -115,14 +160,16 @@ The project is developed based on a Figma design and includes:
 - Deployment on Vercel
 
 ---
-📌 Key Highlights
+
+## 📌 Key Highlights
 - Clean folder structure (modular architecture)
 - Scalable backend design
 - JWT authentication with protected routes
 - Admin role-based access control
 - Fully deployed production-ready app
 
+---
 
-🎯 Conclusion
+## 🎯 Conclusion
 
 This project demonstrates a complete full-stack development workflow including frontend UI, backend APIs, database integration, authentication, and deployment.
